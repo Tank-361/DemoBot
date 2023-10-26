@@ -5,10 +5,21 @@
 #include "Robot.h"
 
 #include <fmt/core.h>
-
+#include <iostream>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 void Robot::RobotInit() {
+  leftDriveMotor1 = new WPI_TalonSRX(3);
+  leftDriveMotor2 = new WPI_TalonSRX(7);
+  leftDriveMotor3 = new WPI_TalonSRX(16);
+  rightDriveMotor1 = new WPI_TalonSRX(1);
+  rightDriveMotor2 = new WPI_TalonSRX(5);
+  rightDriveMotor3 = new WPI_TalonSRX(6);
+  proIntakeMotor = new VictorSPX(11);
+  shooter1 = new WPI_TalonSRX(4);
+  shooter2 = new WPI_TalonSRX(12);
+  driver = new frc::XboxController(0);
+  codriver = new frc::XboxController(1);
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
@@ -58,7 +69,44 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {}
 
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+  if (driver->GetLeftY()>0.1 || driver->GetLeftY()<-0.1) {
+    leftDriveMotor1->Set(driver->GetLeftY());
+    leftDriveMotor2->Set(driver->GetLeftY());
+    leftDriveMotor3->Set(driver->GetLeftY());
+  } else {
+    leftDriveMotor1->Set(0);
+    leftDriveMotor2->Set(0);
+    leftDriveMotor3->Set(0);
+    }
+
+  if (driver->GetRightY()>0.1 || driver->GetRightY()<-0.1) {
+    rightDriveMotor1->Set(-driver->GetRightY());
+    rightDriveMotor2->Set(-driver->GetRightY());
+    rightDriveMotor3->Set(-driver->GetRightY());
+  } else {
+    rightDriveMotor1->Set(0);
+    rightDriveMotor2->Set(0);
+    rightDriveMotor3->Set(0);
+    }
+
+
+  double speed = (fabs(codriver->GetLeftY()>0.15)) ? codriver->GetLeftY() : 0;
+  if (codriver->GetLeftY()>0.1 || codriver->GetLeftY()<-0.1) {
+    shooter1->Set(codriver->GetLeftY());
+    shooter2->Set(codriver->GetLeftY());
+  } else {
+    shooter1->Set(0);
+    shooter2->Set(0);
+  }
+  if (codriver->GetRightY()>0.1 || codriver->GetRightY()<-0.1) {
+    proIntakeMotor->Set(VictorSPXControlMode::PercentOutput, codriver->GetRightY());
+    std::cout << "In Intake Motor" << std::endl;
+  } else {
+    proIntakeMotor->Set(VictorSPXControlMode::PercentOutput, 0);
+  }
+  
+}
 
 void Robot::DisabledInit() {}
 

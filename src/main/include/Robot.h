@@ -3,7 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #pragma once
-
+#include <ctre/phoenix.h>
+#include <frc/XboxController.h>
 #include <string>
 
 #include <frc/TimedRobot.h>
@@ -23,6 +24,19 @@ class Robot : public frc::TimedRobot {
   void TestPeriodic() override;
 
  private:
+  WPI_TalonSRX *leftDriveMotor1;
+  WPI_TalonSRX *leftDriveMotor2;
+  WPI_TalonSRX *leftDriveMotor3;
+  WPI_TalonSRX *rightDriveMotor1;
+  WPI_TalonSRX *rightDriveMotor2;
+  WPI_TalonSRX *rightDriveMotor3;
+  VictorSPX *proIntakeMotor;
+  WPI_TalonSRX *shooter1;
+  WPI_TalonSRX *shooter2;
+
+  frc::XboxController *driver;
+  frc::XboxController *codriver;
+  
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
